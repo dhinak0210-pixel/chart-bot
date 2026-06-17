@@ -1,6 +1,11 @@
 FROM python:3.10-slim
 
-WORKDIR /app
+# Create a non-root user with UID 1000
+RUN useradd -m -u 1000 user
+ENV HOME=/home/user
+ENV PATH=/home/user/.local/bin:$PATH
+
+WORKDIR $HOME/app
 
 RUN apt-get update && apt-get install -y \
     build-essential \
@@ -9,10 +14,12 @@ RUN apt-get update && apt-get install -y \
     git \
     && rm -rf /var/lib/apt/lists/*
 
-COPY requirements.txt .
-RUN pip3 install -r requirements.txt
+COPY --chown=user requirements.txt .
+RUN pip3 install --no-cache-dir -r requirements.txt
 
-COPY . .
+COPY --chown=user . .
+
+USER user
 
 EXPOSE 7860
 
