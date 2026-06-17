@@ -8,10 +8,7 @@ ENV PATH=/home/user/.local/bin:$PATH
 WORKDIR $HOME/app
 
 RUN apt-get update && apt-get install -y \
-    build-essential \
     curl \
-    software-properties-common \
-    git \
     && rm -rf /var/lib/apt/lists/*
 
 COPY --chown=user requirements.txt .
